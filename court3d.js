@@ -5,29 +5,30 @@
   const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
   let modulePromise;
   window.Courtroom3D = {
-    async create(host) {
+    async create(host, options = {}) {
       modulePromise ||= import('./three.module.min.js');
       const THREE = await modulePromise;
-      return new Viewer(THREE, host);
+      return new Viewer(THREE, host, options);
     }
   };
 
   class Viewer {
-    constructor(T, host) {
+    constructor(T, host, options) {
       this.T = T;
       this.host = host;
+      this.options = options;
       this.scene = new T.Scene();
       this.scene.background = new T.Color('#132820');
       this.scene.fog = new T.Fog('#132820', 45, 100);
       this.camera = new T.PerspectiveCamera(43, 1, 0.1, 140);
       this.renderer = new T.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
-      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      this.renderer.setPixelRatio(options.exportMode ? 1 : Math.min(window.devicePixelRatio || 1, matchMedia('(max-width:700px)').matches ? 1.5 : 2));
       this.renderer.shadowMap.enabled = true;
       this.renderer.shadowMap.type = T.PCFSoftShadowMap;
       this.renderer.outputColorSpace = T.SRGBColorSpace;
       this.renderer.toneMapping = T.ACESFilmicToneMapping;
       this.renderer.toneMappingExposure = 1.25;
-      this.renderer.domElement.setAttribute('aria-label', '3D 篮球场，拖动旋转视角，滚轮缩放');
+      this.renderer.domElement.setAttribute('aria-label', '3D 篮球场：单指或左键旋转，双指或右键平移，捏合或滚轮缩放');
       this.renderer.domElement.setAttribute('role', 'img');
       this.renderer.domElement.tabIndex = 0;
       this.host.replaceChildren(this.renderer.domElement);
@@ -36,7 +37,7 @@
       const sun = new T.DirectionalLight('#fff5dd', 3.8);
       sun.position.set(-8, 22, 12);
       sun.castShadow = true;
-      sun.shadow.mapSize.set(2048, 2048);
+      sun.shadow.mapSize.set(options.exportMode || matchMedia('(max-width:700px)').matches ? 1024 : 2048, options.exportMode || matchMedia('(max-width:700px)').matches ? 1024 : 2048);
       Object.assign(sun.shadow.camera, { left: -22, right: 22, top: 25, bottom: -25, far: 65 });
       sun.shadow.bias = -0.001;
       this.scene.add(sun);
@@ -69,7 +70,7 @@
       this.target = new T.Vector3(0, 0.4, 0);
       this.showRoutes = true;
       this.pointer = null;
-      this.bindCamera();
+      if (!options.exportMode) this.bindCamera();
       this.observer = new ResizeObserver(() => this.resize());
       this.observer.observe(host);
       this.resize();
@@ -314,37 +315,27 @@
         side: [Math.PI / 2, 0.83, full ? 40 : 27]
       };
       [this.yaw, this.polar, this.radius] = table[name] || table.angle;
+      this.target.set(0, 0.4, 0);
       if (render) this.render();
     }
 
     bindCamera() {
       const c = this.renderer.domElement;
-      c.addEventListener('pointerdown', e => {
-        if (e.button !== 0) return;
-        c.focus(); c.setPointerCapture(e.pointerId);
-        this.pointer = { id: e.pointerId, x: e.clientX, y: e.clientY, yaw: this.yaw, polar: this.polar };
+      this.controls = new window.CourtCameraControls.CameraControls(c, {
+        rotate: (dx, dy) => { this.yaw -= dx * 0.008; this.polar = clamp(this.polar + dy * 0.006, 0.035, 1.5); this.render(); },
+        pan: (dx, dy) => this.panPixels(dx, dy),
+        zoom: factor => { this.radius = clamp(this.radius * factor, 5, 75); this.render(); }
       });
-      c.addEventListener('pointermove', e => {
-        if (!this.pointer || this.pointer.id !== e.pointerId) return;
-        this.yaw = this.pointer.yaw - (e.clientX - this.pointer.x) * 0.008;
-        this.polar = clamp(this.pointer.polar + (e.clientY - this.pointer.y) * 0.006, 0.06, 1.36);
-        this.render();
-      });
-      for (const event of ['pointerup', 'pointercancel', 'lostpointercapture']) c.addEventListener(event, () => this.pointer = null);
-      c.addEventListener('wheel', e => {
-        e.preventDefault();
-        this.radius = clamp(this.radius * Math.exp(e.deltaY * 0.001), 11, 60);
-        this.render();
-      }, { passive: false });
       c.addEventListener('keydown', e => {
         if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', '+', '-', '=', '0'].includes(e.key)) {
           e.preventDefault(); e.stopPropagation();
+          if(e.shiftKey&&e.key.startsWith('Arrow')){this.panPixels(e.key==='ArrowLeft'?-25:e.key==='ArrowRight'?25:0,e.key==='ArrowUp'?-25:e.key==='ArrowDown'?25:0);return;}
           if (e.key === 'ArrowLeft') this.yaw -= 0.15;
           if (e.key === 'ArrowRight') this.yaw += 0.15;
-          if (e.key === 'ArrowUp') this.polar = clamp(this.polar - 0.1, 0.06, 1.36);
-          if (e.key === 'ArrowDown') this.polar = clamp(this.polar + 0.1, 0.06, 1.36);
-          if (['+', '='].includes(e.key)) this.radius = Math.max(11, this.radius - 2);
-          if (e.key === '-') this.radius = Math.min(60, this.radius + 2);
+          if (e.key === 'ArrowUp') this.polar = clamp(this.polar - 0.1, 0.035, 1.5);
+          if (e.key === 'ArrowDown') this.polar = clamp(this.polar + 0.1, 0.035, 1.5);
+          if (['+', '='].includes(e.key)) this.radius = Math.max(5, this.radius - 2);
+          if (e.key === '-') this.radius = Math.min(75, this.radius + 2);
           if (e.key === '0') this.preset('angle', false);
           this.render();
         }
@@ -355,6 +346,18 @@
       });
       c.addEventListener('webglcontextrestored', () => this.render());
     }
+
+    panPixels(dx,dy){
+      const T=this.T,scale=2*this.radius*Math.tan(this.camera.fov*Math.PI/360)/Math.max(1,this.renderer.domElement.clientHeight);
+      const right=new T.Vector3(1,0,0).applyQuaternion(this.camera.quaternion),up=new T.Vector3(0,1,0).applyQuaternion(this.camera.quaternion);
+      this.target.addScaledVector(right,-dx*scale).addScaledVector(up,dy*scale);
+      this.target.x=clamp(this.target.x,-45,45);this.target.y=clamp(this.target.y,-5,25);this.target.z=clamp(this.target.z,-45,45);this.render();
+    }
+    getCameraState(){return {yaw:this.yaw,polar:this.polar,radius:this.radius,target:{x:this.target.x,y:this.target.y,z:this.target.z},showRoutes:this.showRoutes};}
+    setCameraState(state){if(!state)return;this.yaw=state.yaw;this.polar=clamp(state.polar,.035,1.5);this.radius=clamp(state.radius,5,75);this.target.set(state.target.x,state.target.y,state.target.z);this.setRoutes(state.showRoutes!==false);this.render();}
+    get canvas(){return this.renderer.domElement;}
+    setSize(width,height){this.camera.aspect=width/height;this.camera.updateProjectionMatrix();this.renderer.setSize(width,height,false);this.render();}
+    dispose(){this.observer.disconnect();this.controls?.dispose();this.clear(this.scene);this.renderer.dispose();this.renderer.forceContextLoss();this.host.replaceChildren();}
 
     resize() {
       const { width, height } = this.host.getBoundingClientRect();
