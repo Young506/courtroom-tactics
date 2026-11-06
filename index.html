@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#172c27">
+  <meta name="description" content="在 PC 上绘制篮球战术，编排跑位动画，清晰讲解每一次配合。">
+  <title>战术室 COURTROOM · 篮球战术画板</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23172c27'/%3E%3Ccircle cx='32' cy='32' r='21' fill='none' stroke='%23c9e8ae' stroke-width='3'/%3E%3Cpath d='M11 32h42M32 11v42M18 17q23 15 0 30M46 17q-23 15 0 30' fill='none' stroke='%23c9e8ae' stroke-width='2'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="experience.css">
+  <script src="engine.js" defer></script><script src="court3d.js" defer></script><script src="app.js" defer></script>
+</head>
+<body>
+<svg class="sprite" aria-hidden="true"><defs>
+ <symbol id="i-ball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3v18M5.7 5.7c8 4 8 8.6 0 12.6M18.3 5.7c-8 4-8 8.6 0 12.6"/></symbol>
+ <symbol id="i-board" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="15" rx="2"/><path d="M12 4v15M3 8h4v7H3M21 8h-4v7h4"/><circle cx="12" cy="11.5" r="3"/></symbol>
+ <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v11H3Z"/></symbol>
+ <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+ <symbol id="i-play" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7Z"/></symbol>
+ <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+ <symbol id="i-prev" viewBox="0 0 24 24"><path d="M6 5v14m12-14L7 12l11 7Z"/></symbol>
+ <symbol id="i-next" viewBox="0 0 24 24"><path d="M18 5v14M6 5l11 7-11 7Z"/></symbol>
+ <symbol id="i-cursor" viewBox="0 0 24 24"><path d="m5 3 14 9-7 1-3 7Z"/></symbol>
+ <symbol id="i-run" viewBox="0 0 24 24"><path d="M4 19 20 5M10 5h10v10"/></symbol>
+ <symbol id="i-pass" viewBox="0 0 24 24"><path d="m4 20 2-2m3-3 2-2m3-3 6-6M10 4h10v10"/></symbol>
+ <symbol id="i-dribble" viewBox="0 0 24 24"><path d="m3 21 2-7 5 1 1-7 5 1 5-6M14 3h7v7"/></symbol>
+ <symbol id="i-screen" viewBox="0 0 24 24"><path d="M4 20 18 6m-5-5 10 10"/></symbol>
+ <symbol id="i-shoot" viewBox="0 0 24 24"><path d="M5 20V9a7 7 0 0 1 14 0v7m-4-4 4 4 4-4M2 20h6"/></symbol>
+ <symbol id="i-pen" viewBox="0 0 24 24"><path d="m16 3 5 5L8 21H3v-5ZM13 6l5 5"/></symbol>
+ <symbol id="i-erase" viewBox="0 0 24 24"><path d="m14 3 7 7L11 20H6l-4-4ZM7 11l7 7M11 20h11"/></symbol>
+ <symbol id="i-undo" viewBox="0 0 24 24"><path d="M3 10h11a7 7 0 0 1 0 14M3 10l6-6M3 10l6 6" transform="translate(0 -3)"/></symbol>
+ <symbol id="i-redo" viewBox="0 0 24 24"><path d="M21 7H10a7 7 0 0 0 0 14M21 7l-6-6m6 6-6 6"/></symbol>
+ <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></symbol>
+ <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 16v5h16v-5"/></symbol>
+ <symbol id="i-present" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5M8 8l9 4-9 4Z"/></symbol>
+ <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 8a3 3 0 0 1 6 1c0 2-3 2-3 5m0 3v.2"/></symbol>
+ <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L20 5"/></symbol>
+ <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+ <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></symbol>
+ <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V3H3v13h5"/></symbol>
+ <symbol id="i-loop" viewBox="0 0 24 24"><path d="M3 10V7h15l-3-3m6 10v3H6l3 3M18 7l-3 3M6 17l3-3"/></symbol>
+ <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5Z"/></symbol>
+</defs></svg>
+<div class="app-shell">
+ <aside class="sidebar">
+  <a class="brand" href="#" aria-label="战术室首页"><span class="brand-icon"><svg><use href="#i-ball"/></svg></span><span>战术室<small>COURTROOM</small></span></a>
+  <div class="workspace-label">我的工作空间</div>
+  <nav><button class="nav-item active" id="nav-board"><svg><use href="#i-board"/></svg>战术画板<span class="nav-dot"></span></button><button class="nav-item" id="open-library"><svg><use href="#i-folder"/></svg>我的战术<span id="library-count" class="count">1</span></button></nav>
+  <button class="new-tactic" id="new-tactic"><svg><use href="#i-plus"/></svg>新建战术</button>
+  <div class="sidebar-section"><span>从经典配合开始</span><button class="example-card" id="load-example"><div class="mini-court"><i class="mini-dot m1">1</i><i class="mini-dot m2">5</i><span class="mini-arrow">↗</span></div><strong>高位挡拆 · 顺下配合</strong><small>4 个步骤 · 进攻战术</small><span class="example-link">打开示例 <span>↗</span></span></button></div>
+  <div class="sidebar-bottom"><span class="local-indicator"></span><span>本地优先，随时创作<small>战术自动保存在当前浏览器</small></span></div>
+  <button class="sidebar-help" id="help-btn"><svg><use href="#i-help"/></svg>操作指南与快捷键<span>?</span></button>
+ </aside>
+ <div class="workspace">
+  <header class="topbar"><div class="breadcrumb">工作空间 <span>/</span> 战术画板</div><div class="top-actions"><span id="save-status" class="save-status" role="status"><svg><use href="#i-check"/></svg>已自动保存</span><button class="btn" id="export-menu-btn"><svg><use href="#i-download"/></svg>导出战术</button><button class="btn primary" id="present-btn"><svg><use href="#i-present"/></svg>开始讲解</button></div></header>
+  <main>
+   <section class="tactic-heading"><div><div class="eyebrow"><span></span>TACTICAL WORKSPACE</div><input id="tactic-title" aria-label="战术名称" value="高位挡拆 · 顺下配合" maxlength="60"><div class="subtitle">把每一次跑位，变成清晰的战术。</div></div><div class="heading-right"><span class="tag">进攻战术</span><span id="step-total-label">4 个步骤</span></div></section>
+   <section class="editor">
+    <div class="board-column">
+     <div class="board-toolbar"><div class="segmented view-toggle" aria-label="画板视图"><button data-view="2d" class="active" aria-pressed="true">2D 画板</button><button data-view="3d" aria-pressed="false">3D 预览</button></div><span class="toolbar-separator"></span><div class="segmented" aria-label="球场类型"><button data-court="half" class="active">半场</button><button data-court="full">全场</button></div><label class="players-config">阵容 <select id="lineup" aria-label="阵容人数"><option value="5">5 对 5</option><option value="3">3 对 3</option><option value="1">1 对 1</option></select></label><label class="defense-toggle"><input type="checkbox" id="show-defense" checked>防守球员</label><div class="toolbar-end"><button class="icon-btn" id="undo-btn" title="撤销 Ctrl+Z" aria-label="撤销"><svg><use href="#i-undo"/></svg></button><button class="icon-btn" id="redo-btn" title="重做 Ctrl+Shift+Z" aria-label="重做"><svg><use href="#i-redo"/></svg></button></div></div>
+     <div class="court-workspace">
+      <div class="tool-rail" role="toolbar" aria-label="绘制工具">
+       <button class="tool active" data-tool="select" title="选择 / 移动 V" aria-label="选择移动"><svg><use href="#i-cursor"/></svg><span>选择</span></button><div class="rail-divider"></div>
+       <button class="tool" data-tool="run" title="跑位 R" aria-label="跑位"><svg><use href="#i-run"/></svg><span>跑位</span></button>
+       <button class="tool" data-tool="dribble" title="运球 D" aria-label="运球"><svg><use href="#i-dribble"/></svg><span>运球</span></button>
+       <button class="tool" data-tool="pass" title="传球 P" aria-label="传球"><svg><use href="#i-pass"/></svg><span>传球</span></button>
+       <button class="tool" data-tool="screen" title="掩护 S" aria-label="掩护"><svg><use href="#i-screen"/></svg><span>掩护</span></button>
+       <button class="tool" data-tool="shoot" title="投篮 H" aria-label="投篮"><svg><use href="#i-shoot"/></svg><span>投篮</span></button><div class="rail-divider"></div>
+       <button class="tool" data-tool="pen" title="自由画笔 B" aria-label="自由画笔"><svg><use href="#i-pen"/></svg><span>画笔</span></button>
+       <button class="tool" data-tool="erase" title="擦除 E" aria-label="擦除"><svg><use href="#i-erase"/></svg><span>擦除</span></button>
+      </div>
+      <div class="court-stage"><div class="court-top-label"><span class="live-dot"></span><span id="court-step-label">步骤 01 · 挡拆落位</span><span class="court-brand">COURTROOM / 01</span></div><div class="court-container"><svg id="court" viewBox="0 0 1000 940" role="img" aria-label="篮球战术画板，可拖动球员并绘制动作"></svg><div id="three-host" class="three-host" hidden><p class="three-loading" role="status">正在准备 3D 球场…</p></div><div class="three-controls" id="three-controls" hidden><div class="camera-presets" aria-label="3D 摄像机视角"><button data-camera="angle" class="active">斜视</button><button data-camera="top">俯视</button><button data-camera="baseline">底线</button><button data-camera="side">侧面</button></div><label><input type="checkbox" id="show-3d-routes" checked>显示路线</label><button id="three-reset" title="重置摄像机">重置视角</button><button id="three-shot" title="保存当前3D视图为PNG">保存图片</button></div><span id="three-help" class="three-help" hidden>拖动旋转 · 滚轮缩放 · 下方播放动画</span></div><div class="court-legend"><span><i class="legend-dot attack"></i>进攻</span><span><i class="legend-dot defense"></i>防守</span><span class="legend-route">↗ <span>移动路线</span></span><button id="clear-drawings" title="清除此步骤的路线与画笔">清除标记</button></div></div>
+     </div>
+     <div class="board-hint"><svg><use href="#i-cursor"/></svg><span id="tool-hint">拖动球员调整站位，选择左侧工具绘制战术路线</span><span class="shortcut-hint">空格 播放 / 暂停</span></div>
+    </div>
+    <aside class="inspector"><div class="inspector-heading"><div><span class="section-overline">STEP DETAILS</span><h2>步骤讲解</h2></div><span class="step-badge" id="step-badge">01</span></div><label class="field-label" for="step-title">步骤名称</label><input id="step-title" class="text-field" maxlength="36"><div class="label-row"><label class="field-label" for="step-notes">战术说明</label><span id="notes-count">0 / 800</span></div><textarea id="step-notes" maxlength="800" placeholder="写下跑位、传球时机和配合要点…"></textarea><div class="duration-row"><label for="step-duration">动画时长</label><select id="step-duration"><option value="1">1 秒</option><option value="2">2 秒</option><option value="3">3 秒</option><option value="4">4 秒</option><option value="5">5 秒</option><option value="6">6 秒</option></select></div><div class="inspector-divider"></div><div id="selection-panel" class="selection-panel"></div><div class="inspector-divider"></div><div class="coach-tip"><div><svg><use href="#i-spark"/></svg>教练小贴士</div><p id="coach-tip-text">每一步只讲一个配合重点，队友更容易理解你的战术意图。</p></div><div class="step-actions"><button class="btn" id="duplicate-step"><svg><use href="#i-copy"/></svg>复制步骤</button><button class="icon-btn danger" id="delete-step" title="删除当前步骤" aria-label="删除当前步骤"><svg><use href="#i-trash"/></svg></button></div></aside>
+   </section>
+   <section class="timeline"><div class="timeline-heading"><div><h2>战术时间轴</h2><span>将想法拆成步骤，让配合动起来</span></div><button class="text-btn" id="add-step-top"><svg><use href="#i-plus"/></svg>添加步骤</button></div><div id="step-list" class="step-list" aria-label="战术步骤"></div><div class="playback"><div class="playback-buttons"><button class="icon-btn" id="prev-step" title="上一步 ←" aria-label="上一步"><svg><use href="#i-prev"/></svg></button><button class="play-btn" id="play-btn" aria-label="播放动画"><svg><use href="#i-play"/></svg></button><button class="icon-btn" id="next-step" title="下一步 →" aria-label="下一步"><svg><use href="#i-next"/></svg></button></div><span class="playback-time" id="playback-time">00:00 <span>/ 00:12</span></span><div class="progress-track" id="progress-track" role="progressbar" aria-label="动画播放进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-fill"></div></div><label class="speed-label"><select id="playback-speed" aria-label="播放速度"><option value="0.5">0.5×</option><option value="1" selected>1× 速度</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label><button class="icon-btn" id="loop-btn" title="循环播放" aria-label="循环播放" aria-pressed="false"><svg><use href="#i-loop"/></svg></button></div></section>
+   <footer class="workspace-footer"><span>YOUR IDEAS. YOUR PLAYBOOK.</span><span>每一场好球，都始于一次好配合。</span></footer>
+  </main>
+ </div>
+</div>
+<div class="export-menu" id="export-menu" hidden><button data-export="png">导出画板图片 <small>PNG · 当前步骤</small></button><button data-export="svg">导出矢量画板 <small>SVG · 当前步骤</small></button><button data-export="json">备份战术文件 <small>JSON · 全部步骤，可再次导入</small></button><button id="import-btn">导入战术文件 <small>打开已有 JSON 备份</small></button><button id="print-btn">打印战术讲义 <small>全部步骤与讲解 · 可存为 PDF</small></button></div>
+<input type="file" id="import-file" accept="application/json,.json" hidden>
+<dialog id="library-dialog" class="modal"><div class="modal-heading"><div><span class="section-overline">YOUR PLAYBOOK</span><h2>我的战术</h2></div><button class="icon-btn" data-close aria-label="关闭"><svg><use href="#i-close"/></svg></button></div><p class="modal-description">保存在当前浏览器中的战术。导出 JSON 可以备份，或换台电脑继续编辑。</p><div id="library-list"></div><button class="btn primary modal-new" id="library-new"><svg><use href="#i-plus"/></svg>创建新战术</button></dialog>
+<dialog id="new-dialog" class="modal"><div class="modal-heading"><h2>开始一个新战术</h2><button class="icon-btn" data-close aria-label="关闭"><svg><use href="#i-close"/></svg></button></div><form id="new-form"><label class="field-label" for="new-title">战术名称</label><input class="text-field" id="new-title" placeholder="例如：底线发球 · 双掩护" maxlength="60" required><label class="field-label" for="new-count">初始阵容</label><select class="text-field" id="new-count"><option value="5">5 对 5</option><option value="3">3 对 3</option><option value="1">1 对 1</option></select><button class="btn primary modal-new" type="submit">创建战术 <svg><use href="#i-plus"/></svg></button></form></dialog>
+<dialog id="help-dialog" class="modal"><div class="modal-heading"><div><span class="section-overline">QUICK START</span><h2>把你的战术画出来</h2></div><button class="icon-btn" data-close aria-label="关闭"><svg><use href="#i-close"/></svg></button></div><div class="help-content"><p><b>01 · 布置站位</b><br>选择「选择」工具，拖动球员到初始位置。点击球员，在右侧设置号码、持球或删除球员。</p><p><b>02 · 画出配合</b><br>选择跑位、运球或掩护，从球员拖向目标位置；传球从持球人拖到接球人；投篮从球员拖向篮筐。点击路线可删除。</p><p><b>03 · 编排与讲解</b><br>添加步骤会接续当前动作结束后的站位。每步填写要点，点击播放检查配合；「开始讲解」进入大画板讲解模式。</p><p><b>04 · 保存与备份</b><br>自动保存在本浏览器。「我的战术」可切换作品。导出 JSON 备份完整战术，PNG 保存画板，打印生成全部步骤讲义。</p><div class="key-grid"><span><kbd>V</kbd> 选择</span><span><kbd>R</kbd> 跑位</span><span><kbd>D</kbd> 运球</span><span><kbd>P</kbd> 传球</span><span><kbd>S</kbd> 掩护</span><span><kbd>H</kbd> 投篮</span><span><kbd>B</kbd> 画笔</span><span><kbd>E</kbd> 擦除</span><span><kbd>Space</kbd> 播放</span><span><kbd>← →</kbd> 切换步骤</span><span><kbd>Ctrl Z</kbd> 撤销</span><span><kbd>Esc</kbd> 退出讲解</span></div></div></dialog>
+<div class="present-top"><span class="present-brand">COURTROOM <span>战术讲解</span></span><strong id="present-title"></strong><div class="segmented view-toggle" aria-label="讲解视图"><button data-view="2d" class="active" aria-pressed="true">2D 画板</button><button data-view="3d" aria-pressed="false">3D 预览</button></div><button class="btn" id="exit-present"><svg><use href="#i-close"/></svg>退出讲解 <kbd>Esc</kbd></button></div>
+<div class="present-notes"><span id="present-step"></span><h2 id="present-step-title"></h2><p id="present-note-text"></p><small>← → 切换步骤 · 空格播放 / 暂停</small></div>
+<div id="toast" role="status" class="toast" hidden></div><div id="print-area"></div>
+</body></html>

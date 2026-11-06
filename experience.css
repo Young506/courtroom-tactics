@@ -1,0 +1,193 @@
+/* Readable desktop controls and the 3D tactical preview. */
+[hidden] { display: none !important; }
+body { font-size: 16px; }
+.sidebar { width: 240px; padding: 30px 19px 22px; }
+.workspace { margin-left: 240px; width: calc(100% - 240px); }
+.brand { font-size: 28px; }
+.brand small { font-size: 11px; }
+.workspace-label { font-size: 13px; margin-top: 35px; }
+.nav-item { font-size: 16px; padding: 15px 14px; }
+.count { font-size: 13px; }
+.new-tactic { font-size: 15px; padding: 13px 8px; }
+.sidebar-section > span, .example-card strong { font-size: 14px; }
+.example-card small, .example-link { font-size: 12px; }
+.sidebar-bottom { font-size: 12px; line-height: 1.6; }
+.sidebar-bottom small, .sidebar-help { font-size: 12px; }
+.topbar { min-height: 76px; padding: 0 28px; }
+.breadcrumb, .save-status { font-size: 14px; }
+.top-actions { gap: 12px; }
+.btn { font-size: 15px; padding: 10px 15px; min-height: 40px; }
+.btn svg { width: 18px; height: 18px; }
+main { max-width: 1900px; padding: 26px 28px 20px; }
+.eyebrow { font-size: 12px; }
+#tactic-title { font-size: 30px; height: 43px; }
+.subtitle { font-size: 15px; margin-top: 8px; }
+.heading-right, .tag { font-size: 13px; }
+.editor { grid-template-columns: minmax(0, 1fr) 320px; }
+.board-toolbar { height: auto; min-height: 66px; padding: 10px 16px; gap: 12px; flex-wrap: wrap; }
+.segmented button { font-size: 14px; padding: 7px 12px; min-height: 34px; }
+.view-toggle { background: #e7eddf; }
+.view-toggle button.active { color: #2d553f; font-weight: 650; }
+.players-config, .defense-toggle { font-size: 14px; }
+.players-config select { font-size: 14px; }
+.defense-toggle input { width: 15px; height: 15px; }
+.toolbar-end { gap: 5px; }
+.icon-btn { width: 36px; height: 36px; }
+.icon-btn svg { width: 20px; height: 20px; }
+.court-workspace { min-height: 500px; height: clamp(500px, 52vh, 680px); padding: 20px 16px; gap: 16px; }
+.tool-rail { width: 60px; padding: 6px 5px; }
+.tool { width: 48px; min-height: 48px; }
+.tool span { font-size: 12px; }
+.tool svg { width: 21px; height: 21px; }
+.court-top-label { font-size: 13px; margin-bottom: 13px; }
+#court .player text { font-size: 30px; }
+.court-brand { font-size: 11px; }
+.court-legend { font-size: 12px; padding-top: 13px; gap: 16px; }
+.legend-route span, .court-legend button { font-size: 12px; }
+.board-hint { min-height: 46px; height: auto; padding: 11px 16px; font-size: 13px; line-height: 1.7; }
+.shortcut-hint { font-size: 12px; }
+.inspector { padding: 23px 22px 20px; }
+.inspector-heading { margin-bottom: 22px; }
+.section-overline { font-size: 11px; }
+h2 { font-size: 19px; }
+.step-badge { width: 42px; height: 42px; font-size: 22px; }
+.field-label { font-size: 14px; margin-bottom: 10px; }
+.text-field { font-size: 16px; padding: 11px 12px; }
+.label-row { margin-top: 20px; }
+.label-row > span { font-size: 12px; }
+textarea { font-size: 16px; height: 160px; line-height: 1.85; padding: 12px; }
+.duration-row { font-size: 14px; }
+.duration-row select { font-size: 14px; }
+.selection-panel { font-size: 14px; min-height: 50px; }
+.selection-title { font-size: 15px; }
+.selection-options .btn { font-size: 13px; }
+.selection-options input { font-size: 15px; width: 54px; }
+.coach-tip > div, .coach-tip p { font-size: 13px; }
+.step-actions > .btn { font-size: 14px; }
+.timeline { margin-top: 20px; }
+.timeline-heading { padding: 20px 22px 16px; }
+.timeline-heading h2 { font-size: 17px; }
+.timeline-heading span { font-size: 13px; }
+.text-btn { font-size: 14px; }
+.step-list { padding: 0 22px 18px; min-height: 121px; gap: 14px; }
+.step-card { width: 170px; min-width: 170px; padding: 7px; }
+.thumb { height: 60px; }
+.step-card-bottom, .step-card-bottom > strong { font-size: 13px; }
+.step-card-bottom > small { font-size: 12px; }
+.add-step-card { min-width: 100px; font-size: 14px; }
+.playback { min-height: 62px; gap: 16px; }
+.play-btn { width: 38px; height: 38px; }
+.playback-time, .speed-label select { font-size: 14px; }
+.progress-track { height: 5px; }
+.workspace-footer { font-size: 11px; padding-top: 18px; }
+.export-menu { top: 67px; right: 180px; width: 290px; }
+.export-menu button { font-size: 15px; }
+.export-menu small { font-size: 13px; line-height: 1.7; }
+.modal { width: min(640px, 94vw); padding: 28px; }
+.modal-heading h2 { font-size: 24px; }
+.modal-description, .library-item small { font-size: 14px; }
+.library-item > .open-library-tactic { font-size: 17px; }
+.help-content p { font-size: 15px; }
+.key-grid { font-size: 14px; }
+kbd { font-size: 12px; }
+.toast { font-size: 15px; }
+
+.court-container { position: relative; isolation: isolate; }
+.three-host { position: absolute; inset: 0; min-height: 200px; border: 1px solid #2c4738; border-radius: 10px; background: #132820; overflow: hidden; }
+.three-host canvas { width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; outline-offset: -4px; }
+.three-host canvas:active { cursor: grabbing; }
+.three-host canvas:focus-visible { outline: 2px solid #c2dd9c; }
+.three-loading { display: grid; place-items: center; height: 100%; color: #c1d6b1; font-size: 16px; }
+.three-controls { position: absolute; z-index: 3; left: 14px; top: 14px; right: 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; color: #c9dcb8; pointer-events: none; }
+.three-controls > * { pointer-events: auto; background: #193528ed; border: 1px solid #4e6844; border-radius: 6px; }
+.camera-presets { display: flex; padding: 3px; gap: 3px; }
+.camera-presets button { color: #b4c5a7; padding: 6px 10px; font-size: 13px; border-radius: 4px; }
+.camera-presets button.active, .camera-presets button:hover { color: #1b3b29; background: #c2dd9c; }
+.three-controls > label { padding: 8px 10px; display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.three-controls input { accent-color: #c2dd9c; }
+.three-controls > button { font-size: 13px; color: #c9dcb8; padding: 9px 10px; }
+.three-controls > button:hover { background: #2b4f36; }
+.three-help { position: absolute; left: 16px; bottom: 16px; color: #aec49d; background: #173124d9; border: 1px solid #3a5430; padding: 7px 10px; border-radius: 5px; font-size: 13px; pointer-events: none; }
+body.view-3d #court, body.view-3d .tool-rail, body.view-3d #clear-drawings, body.presenting #clear-drawings { display: none; }
+body.view-3d .court-workspace { padding: 20px 16px 16px; }
+body.view-3d .court-legend { padding-bottom: 1px; }
+body.presenting main { padding: 85px 370px 22px 28px; }
+body.presenting .present-top { height: 75px; padding: 0 28px; gap: 18px; }
+.present-brand { font-size: 15px; }
+.present-brand > span { font-size: 14px; }
+#present-title { font-size: 20px; }
+body.presenting .present-top .view-toggle { background: #254431; }
+body.presenting .present-top .view-toggle button { color: #b6cda2; }
+body.presenting .present-top .view-toggle button.active { color: #26422e; }
+body.presenting .present-notes { width: 300px; right: 32px; }
+.present-notes > span { font-size: 15px; }
+.present-notes h2 { font-size: 28px; }
+.present-notes p { font-size: 19px; }
+.present-notes small { font-size: 14px; line-height: 1.8; }
+body.presenting .court-workspace { height: 100%; min-height: 0; padding: 20px 24px; }
+
+@media (max-width: 1250px) {
+  .sidebar { width: 205px; padding-left: 13px; padding-right: 13px; }
+  .workspace { margin-left: 205px; width: calc(100% - 205px); }
+  .brand { font-size: 25px; }
+  main { padding: 22px 20px 18px; }
+  .editor { grid-template-columns: minmax(0, 1fr) 290px; }
+  .inspector { padding: 22px 18px; }
+  .topbar { padding: 0 20px; }
+  .breadcrumb { font-size: 13px; }
+  .save-status { font-size: 12px; }
+  .board-toolbar { gap: 8px; }
+  .segmented button { padding: 6px 10px; }
+  .toolbar-separator { display: none; }
+  .court-brand { display: none; }
+  .shortcut-hint { display: none; }
+  .timeline-heading span { display: none; }
+  .three-controls { gap: 7px; left: 10px; right: 10px; top: 10px; }
+}
+@media (max-width: 960px) {
+  .sidebar { width: 76px; padding: 26px 10px; }
+  .workspace { margin-left: 76px; width: calc(100% - 76px); }
+  .nav-item { font-size: 0; }
+  .editor { grid-template-columns: minmax(0, 1fr) 270px; }
+  #tactic-title { font-size: 27px; }
+  .save-status { font-size: 0; }
+  .subtitle { font-size: 14px; }
+  .court-workspace { padding: 16px 12px; gap: 10px; }
+  .court-legend { gap: 10px; }
+  .court-legend button, .court-legend { font-size: 11px; }
+  .playback { gap: 10px; }
+  .playback-time, .speed-label select { font-size: 12px; }
+  .present-brand { display: none; }
+  #present-title { font-size: 17px; }
+}
+@media (max-width: 700px) {
+  .workspace { margin: 0; width: 100%; }
+  main { padding: 20px 12px; }
+  .topbar { min-height: 66px; padding: 0 12px; }
+  .top-actions .btn { font-size: 13px; padding: 9px 10px; }
+  #tactic-title { font-size: 24px; }
+  .editor { display: flex; }
+  .court-workspace { min-height: 500px; height: 550px; }
+  .board-toolbar { padding: 10px 12px; }
+  .board-toolbar .segmented button { font-size: 13px; }
+  .players-config, .defense-toggle, .players-config select { font-size: 13px; }
+  .inspector { padding: 22px; }
+  .inspector-heading { margin-bottom: 20px; }
+  textarea { height: 135px; }
+  .timeline-heading h2 { font-size: 16px; }
+  .text-btn { font-size: 13px; }
+  .playback { padding: 0 12px; gap: 7px; }
+  .playback-time { font-size: 11px; }
+  .playback-buttons { gap: 1px; }
+  .playback-buttons .icon-btn { width: 26px; }
+  .play-btn { width: 34px; height: 34px; }
+  .three-controls > label, .three-controls > button { font-size: 12px; }
+  .three-help { font-size: 12px; left: 10px; bottom: 10px; right: 10px; text-align: center; }
+  .camera-presets button { padding: 6px 9px; }
+  .export-menu { top: 60px; right: 12px; }
+  body.presenting main { padding: 120px 10px 20px; }
+  body.presenting .present-top { height: auto; min-height: 105px; flex-wrap: wrap; gap: 10px; padding: 12px 16px; }
+  body.presenting .present-top .btn { font-size: 13px; }
+  body.presenting .present-notes { position: static; width: auto; }
+  .present-notes p { font-size: 17px; }
+}
